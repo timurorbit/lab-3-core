@@ -8,9 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.test.context.web.WebAppConfiguration;
 
+@ImportResource("application-context.xml")
 public class SimpleAppTest {
 	
 	private AbstractApplicationContext context;
@@ -25,9 +28,7 @@ public class SimpleAppTest {
 
 	@Test
 	public void testInitPerson() {
-		UsualPerson person = (UsualPerson) context.getBean("person");
-//		FYI: Another way to achieve the bean
-//		person = context.getBean(UsualPerson.class);
+		UsualPerson person = context.getBean(UsualPerson.class);
 		assertEquals(expectedPerson, person);
 		System.out.println(person);
 	}

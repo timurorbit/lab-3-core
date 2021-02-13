@@ -2,24 +2,28 @@ package com.luxoft.springioc.lab3.model;
 
 import java.util.List;
 
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-//@Component("person")
-public class UsualPerson implements Person {
+@Service("person")
+@PropertySource("classpath:person.properties")
+public class UsualPerson implements Person, InitializingBean, DisposableBean {
 	
 	public static int createdPersons = 0; 
 
-//    @Value("${person.id}")
     private int id;
 
     private String name;
 
-    @Autowired
     private Country country;
 
     private int age;
@@ -31,6 +35,26 @@ public class UsualPerson implements Person {
     private boolean isRegistered;
 
 	private List<String> contacts;
+
+	@Autowired
+    public UsualPerson(@Value("${person.id}") int id,
+                       @Value("${person.name}") String name,
+                       @Autowired Country country,
+                       @Value("${person.age}") int age,
+                       @Value("${person.height}") float height,
+                       @Value("${person.isProgrammer}") boolean isProgrammer,
+                       @Value("${person.isRegistered}") boolean isRegistered) {
+        this.id = id;
+        this.name = name;
+        this.country = country;
+        this.age = age;
+        this.height = height;
+        this.isProgrammer = isProgrammer;
+        this.isRegistered = isRegistered;
+    }
+
+    public UsualPerson() {
+    }
 
     public void setIsProgrammer(boolean isProgrammer) {
         this.isProgrammer = isProgrammer;
@@ -137,4 +161,13 @@ public class UsualPerson implements Person {
         return result;
     }
 
+    @Override
+    public void destroy() throws Exception {
+        createdPersons--;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+	    createdPersons++;
+    }
 }
